@@ -1,13 +1,14 @@
 import { socket } from "./socket";
 import { pc } from "./webrtc";
+import { v4 as uuidv4 } from "uuid";
 
 let remoteStream: MediaStream | null = null;
 
 let callId = new URLSearchParams(window.location.search).get("id");
-let userId = crypto.randomUUID();
+let userId = uuidv4();
 
 if (!callId) {
-  callId = crypto.randomUUID();
+  callId = uuidv4();
   window.history.pushState("", "", `/?id=${callId}`);
 }
 
@@ -27,13 +28,29 @@ navigator.mediaDevices
   .then(async (localStream) => {
     remoteStream = new MediaStream();
 
-    localStream.getTracks().forEach((track) => {
-      pc.addTrack(track);
-    });
+    const videoTrack = localStream.getVideoTracks()[0];
+    const audioTrack = localStream.getAudioTracks()[0];
+
+    pc.addTrack(videoTrack);
+
+    // Send audio to server for processing
+    const audioContext = new AudioContext();
+    const sourceNode = audioContext.createMediaStreamSource(
+      new MediaStream([audioTrack])
+    );
+    const scriptNode = audioContext.createScriptProcessor(4096, 1, 1);
+
+    sourceNode.connect(scriptNode);
+    scriptNode.connect(audioContext.destination);
+
+    scriptNode.onaudioprocess = (audioProcessingEvent) => {
+      const inputBuffer = audioProcessingEvent.inputBuffer;
+      const inputData = inputBuffer.getChannelData(0);
+      socket.emit("audio-data", Array.from(inputData));
+    };
 
     pc.ontrack = (event) => {
       remoteStream?.addTrack(event.track);
-
       console.log(event);
     };
 
@@ -77,4 +94,20 @@ pc.addEventListener("icecandidate", (event) => {
   if (event.candidate) {
     socket.emit("new-icecandidate", event.candidate);
   }
+});
+
+socket.on("processed-audio", (processedAudioData) => {
+  console.log(processedAudioData);
+  const audioContext = new AudioContext();
+  const buffer = audioContext.createBuffer(
+    1,
+    processedAudioData.length,
+    audioContext.sampleRate
+  );
+  buffer.getChannelData(0).set(processedAudioData);
+
+  const source = audioContext.createBufferSource();
+  source.buffer = buffer;
+  source.connect(audioContext.destination);
+  source.start();
 });
