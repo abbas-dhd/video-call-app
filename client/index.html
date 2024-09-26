@@ -3,24 +3,46 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + TS</title>
   </head>
   <body>
+    <div id="blob"></div>
+    <div id="blur"></div>
     <div id="app">
-      <h1>Start your webcam</h1>
-
-      <section class="videos">
-        <div>
+      <h1 class="main-heading">AI Video Call Assistant</h1>
+      <div class="button-container">
+        <button id="mute-button">Mute</button>
+        <button id="help-toggle">Turn on Help</button>
+      </div>
+      <section class="videosSection" style="height: 80vh">
+        <div class="videoContainer">
           <h3>You</h3>
           <video id="webcam-video" autoplay playsinline></video>
         </div>
-        <div>
+        <div class="videoContainer" id="remote-video-container">
           <h3>Other person</h3>
           <video id="remote-video" autoplay playsinline></video>
         </div>
       </section>
+      <div
+        id="text shower"
+        style="
+          width: 100%;
+          height: 5rem;
+          background-color: red;
+          border-radius: 2rem;
+        "
+      ></div>
     </div>
     <script type="module" src="/src/main.ts"></script>
+    <script type="module" src="/src/extra.ts"></script>
   </body>
 </html>

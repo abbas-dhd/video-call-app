@@ -1,0 +1,136 @@
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family:  "Poppins", sans-serif;
+  background-color: #111;
+  color: #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  width: 100%;
+  height: 100vh;
+}
+#app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+    
+}
+
+.main-heading{
+    font-weight: 900;
+    font-size: 4rem;
+
+}
+
+.videosSection{
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.videosSection .videoContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.2s;
+
+}
+
+.videosSection .videoContainer video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.3s ease; /* Add this line */
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+#remote-video-container {
+  /* display: none; */
+  
+}
+
+
+
+
+/* ////////blob */
+
+#blur {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    z-index: -1;
+    backdrop-filter: blur(80px);
+  }
+  #blob {
+    z-index: -2;
+    background-color: white;
+    height: 150px;
+    width: 150px;
+    aspect-ratio: 1;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+  
+    border-radius: 50%;
+    background: linear-gradient(to right, aquamarine, mediumpurple);
+    animation: rotate 20s infinite;
+  }
+  
+  @keyframes rotate {
+    from {
+      rotate: 0deg;
+    }
+    50% {
+      scale: 1 1.5;
+    }
+    to {
+      rotate: 360deg;
+    }
+  }
+
+
+  /* /// animated header gradient  // */
+
+  .main-heading{
+    background: linear-gradient(
+        to right,
+         
+        #00affa 20%,
+        #7953cd 30%,
+        #ff7bd1 70%,
+        #ff3874 80%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-fill-color: transparent;
+    background-size: 300% auto;
+    animation: textShine 10s ease-in-out infinite alternate;
+  }
+  @keyframes textShine {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+button{
+    padding: 2rem;
+}
