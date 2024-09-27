@@ -27,6 +27,8 @@ const remoteVideo: HTMLVideoElement | null =
 const helpToggle: HTMLButtonElement | null =
   document.querySelector("#help-toggle");
 
+const helpText: HTMLButtonElement | null = document.querySelector("#help-text");
+
 webcamVideo && (webcamVideo.muted = true);
 
 // Add a reference to the mute button
@@ -103,10 +105,22 @@ if (helpToggle) {
   helpToggle.textContent = isHelpOn ? "Turn off Help" : "Turn on Help";
 }
 
+const helpTextContainer: HTMLElement | null = document.querySelector(
+  "#help-text-container"
+);
+
 function toggleHelp() {
   isHelpOn = !isHelpOn;
   if (helpToggle) {
     helpToggle.textContent = isHelpOn ? "Turn off Help" : "Turn on Help";
+  }
+
+  if (helpTextContainer) {
+    if (isHelpOn) {
+      helpTextContainer.classList.add("visible");
+    } else {
+      helpTextContainer.classList.remove("visible");
+    }
   }
 
   if (isHelpOn) {
@@ -183,16 +197,6 @@ function sendAudioData(callback: (audioData: ArrayBuffer) => void) {
         // Send the MP3 data to the server
         callback(buffer);
       });
-      // download the blob
-      const url = URL.createObjectURL(mp3Blob);
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      a.download = "audio.mp3";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
 
       audioChunk = []; // Clear the chunk after sending
     }
@@ -356,4 +360,7 @@ socket.on("processed-audio", (processedAudioData) => {
 
 socket.on("help-response", (helpResponse) => {
   console.log("Received 'help-response' event", helpResponse);
+  if (helpText) {
+    helpText.textContent = helpResponse;
+  }
 });
